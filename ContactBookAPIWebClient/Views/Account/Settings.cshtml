@@ -1,0 +1,55 @@
+﻿@model ContactBookAPIWebClient.Models.SettingsViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            @using (Html.BeginForm())
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.PublicKey, new { @class = "col-md-3 control-label" })
+
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => Model.PublicKey, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Model.PublicKey)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.PrivateKey, new { @class = "col-md-3 control-label" })
+
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => Model.PrivateKey, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Model.PrivateKey)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.OldPassword, new { @class = "col-md-3 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(model => Model.OldPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Model.OldPassword)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.NewPassword, new { @class = "col-md-3 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(model => Model.NewPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Model.NewPassword)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.ConfirmNewPassword, new { @class = "col-md-3 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(model => Model.ConfirmNewPassword, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => Model.ConfirmNewPassword)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <input class="btn btn-default" type="submit" value="Save" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,94 @@
+﻿@model IEnumerable<ContactBookAPIWebClient.Models.Contact>
+@using System.Security.Cryptography
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>Avatar</th>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.skypeId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.twitter)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.facebook)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.isContactGroup)
+        </th>
+       
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+       
+        <td>
+            @{  
+                string hashString = string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(item.email))
+                {
+                    MD5 md5Algorithm = MD5.Create();
+                    byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(item.email.ToLower());
+                    byte[] hashBytes = md5Algorithm.ComputeHash(inputBytes);
+
+
+                    foreach (byte b in hashBytes)
+                    {
+                        hashString += b.ToString("X2");
+                    }
+
+                }
+            }
+            <img src="@("http://www.gravatar.com/avatar/"+hashString.ToLower())"/>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.skypeId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.twitter)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.facebook)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.isContactGroup)
+        </td>
+        
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("ContactBook Web Client", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <nav class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Contacts", "Index", "Contact")</li>
+                        <li>@Html.ActionLink("Settings", "Settings", "Account")</li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><p class="navbar-text">Welcome, @User.Identity.Name</p></li>
+                    }
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <form class="navbar-form" action="/Account/Logout" method="get">
+                                <button class="btn btn-danger" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <form class="navbar-form" action="/Account/Login" method="get">
+                                <button class="btn btn-success" type="submit">Login</button>
+                            </form>
+                        </li>
+                        <li>
+                            <form class="navbar-form" action="/Account/SignUp" method="get">
+                                <button class="btn btn-default" type="submit">Sign up</button>
+                            </form>
+                        </li>
+                    }
+
+                </ul>
+
+
+            </nav>
+
+
+        </div>
+    </header>
+
+
+
+    <div class="container body-content">
+        @if (TempData["Notification"] != null)
+        {
+            @Html.Partial("PartialNotification", TempData["Notification"])
+        }
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - ContactBook</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
