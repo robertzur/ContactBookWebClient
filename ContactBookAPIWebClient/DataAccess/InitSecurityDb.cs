@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SeedSimple
 {
-    public class InitSecurityDb : DropCreateDatabaseAlways<UsersContext>
+    public class InitSecurityDb : DropCreateDatabaseIfModelChanges<UsersContext>
     {
         protected override void Seed(UsersContext context)
         {

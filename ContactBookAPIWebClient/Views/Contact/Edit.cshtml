@@ -1,9 +1,10 @@
-﻿@model ContactBookAPIWebClient.Models.Contact
+﻿
+@model ContactBookAPIWebClient.Models.Contact
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-
+    @Html.HiddenFor(model=>model._id)
     <div class="form-horizontal">
         <h4>Contact</h4>
         <hr />
@@ -93,14 +94,14 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-success" />
+                        <input type="submit" value="Save" class="btn btn-success" />
                     </div>
                 </div>
             </div>
-           
+
         </div>
 
-        
+
     </div>
 }
 

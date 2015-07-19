@@ -5,90 +5,177 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>Avatar</th>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.skypeId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.twitter)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.facebook)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.isContactGroup)
-        </th>
-       
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-       
-        <td>
-            @{  
-                string hashString = string.Empty;
-
-                if (!string.IsNullOrWhiteSpace(item.email))
-                {
-                    MD5 md5Algorithm = MD5.Create();
-                    byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(item.email.ToLower());
-                    byte[] hashBytes = md5Algorithm.ComputeHash(inputBytes);
-
-
-                    foreach (byte b in hashBytes)
-                    {
-                        hashString += b.ToString("X2");
-                    }
-
-                }
-            }
-            <img src="@("http://www.gravatar.com/avatar/"+hashString.ToLower())"/>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.skypeId)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.twitter)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.facebook)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.isContactGroup)
-        </td>
-        
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>
-    </tr>
+@section scripts {
+    <script src="~/Scripts/Contact_Index_v1.0.0.js"></script>
 }
 
-</table>
+<h2>Contacts</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", null, new { @class ="btn btn-default" })
+</p>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        string hashString = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(item.email))
+        {
+            MD5 md5Algorithm = MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(item.email.ToLower());
+            byte[] hashBytes = md5Algorithm.ComputeHash(inputBytes);
+
+
+            foreach (byte b in hashBytes)
+            {
+                hashString += b.ToString("X2");
+            }
+
+        }
+
+        <div class="col-sm-6 col-md-3">
+            <div class="thumbnail">
+                <img src="@("http://www.gravatar.com/avatar/"+hashString.ToLower()+"?s=250")">
+                <div class="caption">
+                    <h3>@item.name</h3>
+                    <p>@(string.IsNullOrEmpty(item.description) ? Html.Raw("<span>&nbsp;</span>") : Html.Raw(item.description))</p>
+                    <p style="text-align:center">
+                        <a href="#" data-toggle="modal" data-target="#detailsModal" data-id="@item._id" class="btn btn-primary" role="button">Details</a>
+                        <a href="/Contact/Edit/@item._id" class="btn btn-primary" role="button">Edit</a>
+                        <a href="/Contact/Delete/@item._id" class="btn btn-danger btn-delete" contact-id="@item._id" role="button">Remove</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    }
+
+</div>
+
+<!-- Modal -->
+<div id="detailsModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="modal-btn modal-close close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <div class="modal-title">Contact card</div>
+            </div>
+            <div class="modal-body-load">
+                <div class="container-fluid">
+                    <div class="row">
+                        <p class="text-center" style="padding:20px;"><img src="~/Content/img/ajax-loader.gif" /></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img class="avatar" id="detailsAvatar" src="#" />
+                            </div>
+                            <div class="col-md-2">
+                                <p class="contact-card-line">
+                                    <strong>
+                                        Name:
+                                    </strong>
+                                </p>
+                                <p class="contact-card-line">
+                                    <strong>
+                                        Description:
+                                    </strong>
+                                </p>
+                                <p class="contact-card-line">
+                                    <strong>
+                                        Email:
+                                    </strong>
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="contact-card-line ">
+
+                                    <span id="detailsName"></span>
+
+                                </p>
+                                <p class="contact-card-line">
+
+                                    <span id="detailsDescription"></span>
+                                </p>
+                                <p class="contact-card-line">
+
+                                    <span id="detailsEmail"></span>
+                                </p>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-offset-2 col-md-3">
+                                <p class="contact-card-line">
+                                    <strong>
+                                        Address Line 1:
+                                    </strong>
+                                </p>
+                                <p class="contact-card-line">
+                                    <strong>
+                                        Address Line 2:
+                                    </strong>
+                                </p>
+                                <p class="contact-card-line">
+                                    <strong>
+                                        Phone #:
+                                    </strong>
+                                </p>
+                                <p class="contact-card-line">
+                                    <strong>
+                                        Cell #:
+                                    </strong>
+                                </p>
+                            </div>
+                            <div class="col-md-5">
+                                <p class="contact-card-line">
+
+                                    <span id="detailsAddressLine1"></span>
+                                </p>
+                                <p class="contact-card-line">
+
+                                    <span id="detailsAddressLine2"></span>
+                                </p>
+                                <p class="contact-card-line">
+
+                                    <span id="detailsPhoneNumber"></span>
+                                </p>
+                                <p class="contact-card-line">
+
+                                    <span id="detailsCellNumber"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <img src="~/Content/img/facebook-ico.png" />
+                                <a href="#" id="detailsFacebook" target="_blank"></a>
+                            </div>
+                            <div class="col-md-4">
+
+                                <img src="~/Content/img/twitter-ico.png" />
+                                <a href="#" id="detailsTwitter" target="_blank"></a>
+                            </div>
+                            <div class="col-md-4">
+
+                                <img src="~/Content/img/skype-ico.png" />
+                                <a href="#" id="detailsSkype" target="_blank"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

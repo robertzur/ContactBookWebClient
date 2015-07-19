@@ -6,6 +6,13 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+    @if (ViewBag.SiteRoot != null)
+    {
+        <script type="text/javascript">
+            var siteRoot = '@ViewBag.SiteRoot';
+        </script>
+    }
 </head>
 <body>
     <header class="navbar navbar-default navbar-fixed-top">

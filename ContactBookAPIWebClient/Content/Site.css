@@ -22,6 +22,26 @@ label {
     margin-top: 16px;
 }
 
+
+.avatar {
+    border-radius: 15px;
+    float:left;
+    margin-right: 20px;
+
+}
+
+
+.contact-card-line{
+    margin-left: 20px;
+    line-height:25px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: larger;
+}
+.contact-card-line strong {
+    font-size:small;
+    margin-right: 15px;
+    line-height:25px;
+}
 /* Carousel */
 .carousel-caption {
     z-index: 10 !important;
