@@ -64,6 +64,7 @@ namespace ContactBookAPIWebClient.Controllers
         {
             int id = WebSecurity.GetUserId(WebSecurity.CurrentUserName);
             var userProfile = _userContext.UserProfiles.First(x => x.UserId == id);
+            model.tags = (model.tags.Count() > 0 ? model.tags.First().Split(',') : null);
 
             if (string.IsNullOrWhiteSpace(userProfile.PrivateKey) || string.IsNullOrWhiteSpace(userProfile.PublicKey))
             {

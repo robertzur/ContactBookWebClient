@@ -229,6 +229,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DataAccess\ContactEndpoint.cs" />
     <Compile Include="DataAccess\InitSecurityDb.cs" />
+    <Compile Include="DataAccess\TagEndpoint.cs" />
     <Compile Include="DataAccess\UserContext.cs" />
     <Compile Include="DataAccess\UserEndpoint.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\SettingsViewModel.cs" />
     <Compile Include="Models\SignUpViewModel.cs" />
+    <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\UserData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -256,6 +258,7 @@
     <Content Include="Content\img\facebook-ico.png" />
     <Content Include="Content\img\skype-ico.png" />
     <Content Include="Content\img\twitter-ico.png" />
+    <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -263,10 +266,12 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Contact_Create_v1.0.0.js" />
     <Content Include="Scripts\Contact_Index_v1.0.0.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.tagsinput.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />

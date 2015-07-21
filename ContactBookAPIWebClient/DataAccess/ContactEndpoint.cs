@@ -35,6 +35,16 @@ namespace ContactBookAPIWebClient.DataAccess
         
         public string CreateContact(Contact model, UserData userData)
         {
+            string tagsString = string.Empty;
+
+            if (model.tags != null && model.tags.Count() > 0)
+            {
+                for(int i = 0; i< model.tags.Count(); i++)
+                {
+                    tagsString = string.Concat(tagsString, model.tags[i], (i == model.tags.Count()-1 ? "" : ";"));
+                }
+            }
+
             try
             {
                 client = new HttpClient();
@@ -50,6 +60,7 @@ namespace ContactBookAPIWebClient.DataAccess
                 postData.Add(new KeyValuePair<string, string>("twitter", model.twitter));
                 postData.Add(new KeyValuePair<string, string>("facebook", model.facebook));
                 postData.Add(new KeyValuePair<string, string>("isContactGroup", (model.isContactGroup ? "true" : "false")));
+                postData.Add(new KeyValuePair<string, string>("tags", tagsString));
                 if (!string.IsNullOrWhiteSpace(model.parentId))
                 {
                     postData.Add(new KeyValuePair<string, string>("parentId", model.parentId));
