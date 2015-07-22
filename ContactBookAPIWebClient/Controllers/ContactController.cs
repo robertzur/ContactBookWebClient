@@ -3,6 +3,7 @@ using ContactBookAPIWebClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using WebMatrix.WebData;
@@ -28,11 +29,11 @@ namespace ContactBookAPIWebClient.Controllers
         }
 
         [Authorize]
-        public ActionResult Index(int? pageNumber, int pageSize = 12)
+        public ActionResult Index(string searchQuery, string searchScope, int? pageNumber, int pageSize = 12)
         {
             int id = WebSecurity.GetUserId(WebSecurity.CurrentUserName);
             var userProfile = _userContext.UserProfiles.First(x => x.UserId == id);
-
+            searchScope = "all";
             if (string.IsNullOrWhiteSpace(userProfile.PrivateKey) || string.IsNullOrWhiteSpace(userProfile.PublicKey))
             {
                 TempData["Notification"] = new Notification("Please provide access keys that have been sent you by email", Nature.warning);
@@ -45,9 +46,19 @@ namespace ContactBookAPIWebClient.Controllers
             UserData userData = new UserData();
             userData.PublicKey = userProfile.PublicKey;
             userData.Timestamp = DateTime.Now;
-            userData.GenerateAuthenticationHash(userProfile.PrivateKey+userProfile.PublicKey+"GET/contact/"+pageNumber.Value+"/"+pageSize+userData.Timestamp+userProfile.PrivateKey);
 
-            var result = c.GetContacts(pageNumber.Value, pageSize, userData);
+            List<Contact> result;
+            if (string.IsNullOrWhiteSpace(searchQuery) || searchScope == null)
+            {
+                userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/" + pageNumber.Value + "/" + pageSize + userData.Timestamp + userProfile.PrivateKey);
+                result = c.GetContacts(pageNumber.Value, pageSize, userData);
+
+            } else
+            {
+                userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/"+searchScope+"/"+searchQuery+"/" + pageNumber.Value + "/" + pageSize + userData.Timestamp + userProfile.PrivateKey);
+                result = c.GetFilteredContacts(searchScope, searchQuery, pageNumber.Value, pageSize, userData);
+            }
+
             return View(result);
         }
 
@@ -64,7 +75,6 @@ namespace ContactBookAPIWebClient.Controllers
         {
             int id = WebSecurity.GetUserId(WebSecurity.CurrentUserName);
             var userProfile = _userContext.UserProfiles.First(x => x.UserId == id);
-            model.tags = (model.tags.Count() > 0 ? model.tags.First().Split(',') : null);
 
             if (string.IsNullOrWhiteSpace(userProfile.PrivateKey) || string.IsNullOrWhiteSpace(userProfile.PublicKey))
             {
@@ -83,6 +93,7 @@ namespace ContactBookAPIWebClient.Controllers
                 string message = c.CreateContact(model, userData);
                 
                 TempData["Notification"] = new Notification("Contact has been added" + message, Nature.success);
+                Thread.Sleep(2500);
                 return RedirectToAction("Index");
 
             } else
@@ -110,21 +121,22 @@ namespace ContactBookAPIWebClient.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult Edit(Contact model)
+        public ActionResult Edit(ContactViewModel model)
         {
             int userId = WebSecurity.GetUserId(WebSecurity.CurrentUserName);
             var userProfile = _userContext.UserProfiles.First(x => x.UserId == userId);
-            model.isContactGroup = false;
+            model.contact.isContactGroup = false;
 
             UserData userData = new UserData();
             userData.PublicKey = userProfile.PublicKey;
             userData.Timestamp = DateTime.Now;
-            userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "POST/contact/" + model._id + userData.Timestamp + userProfile.PrivateKey);
+            userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "POST/contact/" + model.contact._id + userData.Timestamp + userProfile.PrivateKey);
 
             ContactEndpoint c = new ContactEndpoint();
-            string message = c.UpdateContact(model, userData);
+            string message = c.UpdateContact(model.contact, userData);
 
-            TempData["Notification"] = new Notification("Contact has been added" + message, Nature.success);
+            TempData["Notification"] = new Notification("Contact has been modified" + message, Nature.success);
+            Thread.Sleep(2500);
 
             return RedirectToAction("Index");
         }

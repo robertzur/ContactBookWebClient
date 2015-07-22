@@ -1,4 +1,5 @@
-﻿using ContactBookAPIWebClient.Models;
+﻿using ContactBookAPIWebClient.Helpers;
+using ContactBookAPIWebClient.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,19 +33,29 @@ namespace ContactBookAPIWebClient.DataAccess
                
             }
         }
-        
+
+        public List<Contact> GetFilteredContacts(string searchScope, string searchQuery, int page, int pageSize, UserData userData)
+        {
+            using (client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:3000/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Timestamp", userData.Timestamp.ToString());
+                client.DefaultRequestHeaders.Add("Digest", userData.AuthenticationHash);
+                client.DefaultRequestHeaders.Add("Public-Key", userData.PublicKey);
+
+                var response = client.GetStringAsync(string.Format("contact/{0}/{1}/{2}/{3}", searchScope, searchQuery, page, pageSize)).Result;
+
+                var result = JsonConvert.DeserializeObject<List<Contact>>(response);
+
+                return result;
+
+            }
+        }
+
         public string CreateContact(Contact model, UserData userData)
         {
-            string tagsString = string.Empty;
-
-            if (model.tags != null && model.tags.Count() > 0)
-            {
-                for(int i = 0; i< model.tags.Count(); i++)
-                {
-                    tagsString = string.Concat(tagsString, model.tags[i], (i == model.tags.Count()-1 ? "" : ";"));
-                }
-            }
-
             try
             {
                 client = new HttpClient();
@@ -60,7 +71,7 @@ namespace ContactBookAPIWebClient.DataAccess
                 postData.Add(new KeyValuePair<string, string>("twitter", model.twitter));
                 postData.Add(new KeyValuePair<string, string>("facebook", model.facebook));
                 postData.Add(new KeyValuePair<string, string>("isContactGroup", (model.isContactGroup ? "true" : "false")));
-                postData.Add(new KeyValuePair<string, string>("tags", tagsString));
+                postData.Add(new KeyValuePair<string, string>("tags", model.tags[0]));
                 if (!string.IsNullOrWhiteSpace(model.parentId))
                 {
                     postData.Add(new KeyValuePair<string, string>("parentId", model.parentId));
@@ -110,6 +121,8 @@ namespace ContactBookAPIWebClient.DataAccess
                 postData.Add(new KeyValuePair<string, string>("twitter", model.twitter));
                 postData.Add(new KeyValuePair<string, string>("facebook", model.facebook));
                 postData.Add(new KeyValuePair<string, string>("isContactGroup", (model.isContactGroup ? "true" : "false")));
+                postData.Add(new KeyValuePair<string, string>("tags", model.tags[0]));
+
                 if (!string.IsNullOrWhiteSpace(model.parentId))
                 {
                     postData.Add(new KeyValuePair<string, string>("parentId", model.parentId));
@@ -173,7 +186,7 @@ namespace ContactBookAPIWebClient.DataAccess
             return null;
         }
 
-        public Contact GetContact(string id, UserData userData)
+        public ContactViewModel GetContact(string id, UserData userData)
         {
             using (client = new HttpClient())
             {
@@ -186,7 +199,7 @@ namespace ContactBookAPIWebClient.DataAccess
 
                 var response = client.GetStringAsync(string.Format("contact/{0}", id)).Result;
 
-                var result = JsonConvert.DeserializeObject<Contact>(response);
+                var result = JsonConvert.DeserializeObject<ContactViewModel>(response);
 
                 return result;
 
