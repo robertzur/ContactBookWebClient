@@ -45,10 +45,13 @@
                     modal.find('#detailsSkype').attr('href', 'skype:' + contact.skypeId + '?call');
                     
                     modal.find('#detailsTags').children().remove();
-                    for (var i = 0; i < tags.length; i++) {
-                        modal.find('#detailsTags').append('<span class="tag">' + tags[i] + '</span>');
-                    }
-
+     
+                        for (var i = 0; i < tags.length; i++) {
+                            if (!isEmptyOrSpaces(tags[i])) {
+                                modal.find('#detailsTags').append('<span class="tag">' + tags[i] + '</span>');
+                            }
+                        }
+                    
 
                     modal.find('input,textarea,select').attr('disabled', 'disabled');
 
@@ -76,4 +79,8 @@
         } else { }
 
     });
+
+    function isEmptyOrSpaces(str) {
+        return str === null || str.match(/^ *$/) !== null;
+    }
 });

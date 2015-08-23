@@ -59,6 +59,25 @@
                         @Html.ValidationMessageFor(model => model.contact.phoneNumber, "", new { @class = "text-danger" })
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2">Group</label>
+                    <div class="col-md-10">
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="groupDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                @(ViewBag.GroupName) <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="groupDropdown">
+                                <li><a group-id="">---</a></li>
+
+                                @foreach (var item in (List<ContactBookAPIWebClient.Models.Group>)ViewBag.Groups)
+                                {
+                                    <li><a group-id="@item._id">@item.name</a></li>
+                                }
+                            </ul>
+                        </div>
+                        @Html.HiddenFor(model => model.contact.parentId)
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">

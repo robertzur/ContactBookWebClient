@@ -1,5 +1,4 @@
-﻿using ContactBookAPIWebClient.Helpers;
-using ContactBookAPIWebClient.Models;
+﻿using ContactBookAPIWebClient.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,11 +9,11 @@ using System.Web;
 
 namespace ContactBookAPIWebClient.DataAccess
 {
-    public class ContactEndpoint
+    public class GroupEndpoint
     {
         private HttpClient client;
 
-        public List<Contact> GetContacts(int page, int pageSize, UserData userData)
+        public List<Group> GetGroups(int page, int pageSize, UserData userData)
         {
             using (client = new HttpClient())
             {
@@ -25,16 +24,16 @@ namespace ContactBookAPIWebClient.DataAccess
                 client.DefaultRequestHeaders.Add("Digest", userData.AuthenticationHash);
                 client.DefaultRequestHeaders.Add("Public-Key", userData.PublicKey);
 
-                var response = client.GetStringAsync(string.Format("contact/{0}/{1}/{2}",page,pageSize,"false")).Result;
+                var response = client.GetStringAsync(string.Format("contact/{0}/{1}/{2}", page, pageSize, "true")).Result;
 
-                var result = JsonConvert.DeserializeObject<List<Contact>>(response);
+                var result = JsonConvert.DeserializeObject<List<Group>>(response);
 
                 return result;
-               
+
             }
         }
 
-        public List<Contact> GetFilteredContacts(string searchScope, string searchQuery, int page, int pageSize, UserData userData)
+        public List<Group> GetFilteredGroups(string searchScope, string searchQuery, int page, int pageSize, UserData userData)
         {
             using (client = new HttpClient())
             {
@@ -45,36 +44,16 @@ namespace ContactBookAPIWebClient.DataAccess
                 client.DefaultRequestHeaders.Add("Digest", userData.AuthenticationHash);
                 client.DefaultRequestHeaders.Add("Public-Key", userData.PublicKey);
 
-                var response = client.GetStringAsync(string.Format("contact/{0}/{1}/{2}/{3}/{4}", searchScope, searchQuery, page, pageSize, "false")).Result;
+                var response = client.GetStringAsync(string.Format("contact/{0}/{1}/{2}/{3}/{4}", searchScope, searchQuery, page, pageSize, "true")).Result;
 
-                var result = JsonConvert.DeserializeObject<List<Contact>>(response);
-
-                return result;
-
-            }
-        }
-
-        public List<Contact> GetContactsInGroup(string groupId, UserData userData)
-        {
-            using (client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:3000/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Timestamp", userData.Timestamp.ToString());
-                client.DefaultRequestHeaders.Add("Digest", userData.AuthenticationHash);
-                client.DefaultRequestHeaders.Add("Public-Key", userData.PublicKey);
-
-                var response = client.GetStringAsync(string.Format("contact/group/{0}", groupId, "false")).Result;
-
-                var result = JsonConvert.DeserializeObject<List<Contact>>(response);
+                var result = JsonConvert.DeserializeObject<List<Group>>(response);
 
                 return result;
 
             }
         }
 
-        public string CreateContact(Contact model, UserData userData)
+        public string CreateGroup(Group model, UserData userData)
         {
             try
             {
@@ -82,15 +61,7 @@ namespace ContactBookAPIWebClient.DataAccess
                 var postData = new List<KeyValuePair<string, string>>();
                 postData.Add(new KeyValuePair<string, string>("name", model.name));
                 postData.Add(new KeyValuePair<string, string>("description", model.description));
-                postData.Add(new KeyValuePair<string, string>("addressLine1", model.addressLine1));
-                postData.Add(new KeyValuePair<string, string>("addressLine2", model.addressLine2));
-                postData.Add(new KeyValuePair<string, string>("phoneNumber", model.phoneNumber));
-                postData.Add(new KeyValuePair<string, string>("cellNumber", model.cellNumber));
-                postData.Add(new KeyValuePair<string, string>("email", model.email));
-                postData.Add(new KeyValuePair<string, string>("skypeId", model.skypeId));
-                postData.Add(new KeyValuePair<string, string>("twitter", model.twitter));
-                postData.Add(new KeyValuePair<string, string>("facebook", model.facebook));
-                postData.Add(new KeyValuePair<string, string>("isContactGroup", (model.isContactGroup ? "true" : "false")));
+                postData.Add(new KeyValuePair<string, string>("isContactGroup", "true"));
                 postData.Add(new KeyValuePair<string, string>("tags", model.tags[0]));
                 if (!string.IsNullOrWhiteSpace(model.parentId))
                 {
@@ -124,7 +95,7 @@ namespace ContactBookAPIWebClient.DataAccess
             return null;
         }
 
-        public string UpdateContact(Contact model, UserData userData)
+        public string UpdateGroup(Group model, UserData userData)
         {
             try
             {
@@ -132,15 +103,7 @@ namespace ContactBookAPIWebClient.DataAccess
                 var postData = new List<KeyValuePair<string, string>>();
                 postData.Add(new KeyValuePair<string, string>("name", model.name));
                 postData.Add(new KeyValuePair<string, string>("description", model.description));
-                postData.Add(new KeyValuePair<string, string>("addressLine1", model.addressLine1));
-                postData.Add(new KeyValuePair<string, string>("addressLine2", model.addressLine2));
-                postData.Add(new KeyValuePair<string, string>("phoneNumber", model.phoneNumber));
-                postData.Add(new KeyValuePair<string, string>("cellNumber", model.cellNumber));
-                postData.Add(new KeyValuePair<string, string>("email", model.email));
-                postData.Add(new KeyValuePair<string, string>("skypeId", model.skypeId));
-                postData.Add(new KeyValuePair<string, string>("twitter", model.twitter));
-                postData.Add(new KeyValuePair<string, string>("facebook", model.facebook));
-                postData.Add(new KeyValuePair<string, string>("isContactGroup", (model.isContactGroup ? "true" : "false")));
+                postData.Add(new KeyValuePair<string, string>("isContactGroup", "true"));
                 postData.Add(new KeyValuePair<string, string>("tags", model.tags[0]));
 
                 if (!string.IsNullOrWhiteSpace(model.parentId))
@@ -156,7 +119,7 @@ namespace ContactBookAPIWebClient.DataAccess
                 content.Headers.Add("Public-Key", userData.PublicKey);
 
 
-                client.PostAsync("http://localhost:3000/contact/"+model._id, content)
+                client.PostAsync("http://localhost:3000/contact/" + model._id, content)
                     .ContinueWith(postTask =>
                     {
                         postTask.Result.EnsureSuccessStatusCode();
@@ -175,7 +138,7 @@ namespace ContactBookAPIWebClient.DataAccess
             return null;
         }
 
-        public string DeleteContact(string id, UserData userData)
+        public string DeleteGroup(string id, UserData userData)
         {
             try
             {
@@ -206,7 +169,7 @@ namespace ContactBookAPIWebClient.DataAccess
             return null;
         }
 
-        public ContactViewModel GetContact(string id, UserData userData)
+        public GroupViewModel GetGroup(string id, UserData userData)
         {
             using (client = new HttpClient())
             {
@@ -219,7 +182,7 @@ namespace ContactBookAPIWebClient.DataAccess
 
                 var response = client.GetStringAsync(string.Format("contact/{0}", id)).Result;
 
-                var result = JsonConvert.DeserializeObject<ContactViewModel>(response);
+                var result = JsonConvert.DeserializeObject<GroupViewModel>(response);
 
                 return result;
 

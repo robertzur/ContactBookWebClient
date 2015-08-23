@@ -50,22 +50,35 @@ namespace ContactBookAPIWebClient.Controllers
             List<Contact> result;
             if (string.IsNullOrWhiteSpace(searchQuery) || searchScope == null)
             {
-                userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/" + pageNumber.Value + "/" + pageSize + userData.Timestamp + userProfile.PrivateKey);
+                userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/" + pageNumber.Value + "/" + pageSize+"/false" + userData.Timestamp + userProfile.PrivateKey);
                 result = c.GetContacts(pageNumber.Value, pageSize, userData);
 
             } else
             {
-                userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/"+searchScope+"/"+searchQuery+"/" + pageNumber.Value + "/" + pageSize + userData.Timestamp + userProfile.PrivateKey);
+                userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/"+searchScope+"/"+searchQuery+"/" + pageNumber.Value + "/" + pageSize+"/false" + userData.Timestamp + userProfile.PrivateKey);
                 result = c.GetFilteredContacts(searchScope, searchQuery, pageNumber.Value, pageSize, userData);
             }
 
+            ViewBag.SearchQuery = searchQuery;
             return View(result);
         }
 
         [Authorize]
         public ActionResult Create()
         {
+            int id = WebSecurity.GetUserId(WebSecurity.CurrentUserName);
+            var userProfile = _userContext.UserProfiles.First(x => x.UserId == id);
+
             Contact c = new Contact();
+            GroupEndpoint g = new GroupEndpoint();
+
+            UserData userData = new UserData();
+            userData.PublicKey = userProfile.PublicKey;
+            userData.Timestamp = DateTime.Now;
+            userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/1/9999/true" + userData.Timestamp + userProfile.PrivateKey);
+
+            ViewBag.Groups = g.GetGroups(1, 9999, userData);
+
             return View(c);
         }
 
@@ -115,6 +128,16 @@ namespace ContactBookAPIWebClient.Controllers
 
             ContactEndpoint c = new ContactEndpoint();
             var contact = c.GetContact(id, userData);
+
+            GroupEndpoint g = new GroupEndpoint();
+
+            userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/1/9999/true" + userData.Timestamp + userProfile.PrivateKey);
+            var groups = g.GetGroups(1, 9999, userData);
+            var currentGroup = groups.FirstOrDefault(gr => gr._id == contact.contact.parentId);
+
+            ViewBag.Groups = groups;
+
+            ViewBag.GroupName = (currentGroup == null ? "---" : currentGroup.name);
 
             return View(contact);
         }
@@ -173,6 +196,23 @@ namespace ContactBookAPIWebClient.Controllers
 
             ContactEndpoint c = new ContactEndpoint();
             var contact = c.GetContact(id, userData);
+
+            return Json(contact, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetContactsInGroupByAjax(string id /* group Id */)
+        {
+            int userId = WebSecurity.GetUserId(WebSecurity.CurrentUserName);
+            var userProfile = _userContext.UserProfiles.First(x => x.UserId == userId);
+
+            UserData userData = new UserData();
+            userData.PublicKey = userProfile.PublicKey;
+            userData.Timestamp = DateTime.Now;
+            userData.GenerateAuthenticationHash(userProfile.PrivateKey + userProfile.PublicKey + "GET/contact/group/" + id + userData.Timestamp + userProfile.PrivateKey);
+
+            ContactEndpoint c = new ContactEndpoint();
+            var contact = c.GetContactsInGroup(id, userData);
 
             return Json(contact, JsonRequestBehavior.AllowGet);
 

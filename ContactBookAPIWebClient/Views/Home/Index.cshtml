@@ -1,3 +1,111 @@
 ﻿@{
-    ViewBag.Title = "Contact Book - Home Page";
+    Layout = null;
 }
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @if (ViewBag.SiteRoot != null)
+    {
+        <script type="text/javascript">
+            var siteRoot = '@ViewBag.SiteRoot';
+        </script>
+    }
+</head>
+<body>
+    <header class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("ContactBook Web Client", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <nav class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Contacts", "Index", "Contact")</li>
+                        <li>@Html.ActionLink("Groups", "Index", "Group")</li>
+
+                        <li>@Html.ActionLink("Settings", "Settings", "Account")</li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><p class="navbar-text">Welcome, @User.Identity.Name</p></li>
+                    }
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <form class="navbar-form" action="/Account/Logout" method="get">
+                                <button class="btn btn-danger" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <form class="navbar-form" action="/Account/Login" method="get">
+                                <button class="btn btn-success" type="submit">Login</button>
+                            </form>
+                        </li>
+                        <li>
+                            <form class="navbar-form" action="/Account/SignUp" method="get">
+                                <button class="btn btn-default" type="submit">Sign up</button>
+                            </form>
+                        </li>
+                    }
+
+                </ul>
+
+
+            </nav>
+
+
+        </div>
+    </header>
+
+    <div class="main-page-box">
+        <div class="container">
+            <div class="jumbotron" style="background-color:transparent; margin-top:30px;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h1 style="color:white; text-shadow:1px 1px 5px #000;">Stay in touch</h1>
+                        <h2>with ContactBook</h2>
+                    </div>
+                    <div class="col-md-5">
+                        <div style="margin-top: 30px; color:white;">
+                           <p>Store all kinds of contacts in one place...</p>
+                           <p>Categorize, tag and search rapidly...</p>
+                           <p>Integrate with social networks...</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top:350px">
+        <hr />
+
+        <p>&copy; @DateTime.Now.Year - ContactBook</p>
+    </div>
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>

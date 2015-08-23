@@ -64,3 +64,20 @@ input.input-validation-error { border: 1px solid #f00; background-color: #fee; }
 span.field-validation-error {
     color: #f00;
 }
+
+/* MISC */
+
+.group-members {
+    max-height : 300px;
+    overflow: auto;
+
+}
+
+.main-page-box {
+    background-image:url(img/congruent_outline.png);
+    position:absolute; 
+    top:0; 
+    left:0; 
+    width:100%; 
+    height:auto; 
+}

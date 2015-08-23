@@ -23,6 +23,7 @@ namespace ContactBookAPIWebClient.Models
         [Display(Name="Cell Number")]
         public string cellNumber { get; set; }
         [Display(Name="Email")]
+        [Required(ErrorMessage="Email is required")]
         public string email { get; set; }
         [Display(Name="Skype Id")]
         public string skypeId { get; set; }

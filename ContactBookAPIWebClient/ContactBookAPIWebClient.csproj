@@ -226,8 +226,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DataAccess\ContactEndpoint.cs" />
+    <Compile Include="DataAccess\GroupEndpoint.cs" />
     <Compile Include="DataAccess\InitSecurityDb.cs" />
     <Compile Include="DataAccess\TagEndpoint.cs" />
     <Compile Include="DataAccess\UserContext.cs" />
@@ -238,9 +240,11 @@
     </Compile>
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Models\ApiMessage.cs" />
+    <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Contact.cs" />
     <Compile Include="Models\ContactViewModel.cs" />
     <Compile Include="Models\Enums.cs" />
+    <Compile Include="Models\GroupViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\SettingsViewModel.cs" />
@@ -258,6 +262,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\img\ajax-loader.gif" />
+    <Content Include="Content\img\congruent_outline.png" />
     <Content Include="Content\img\facebook-ico.png" />
     <Content Include="Content\img\skype-ico.png" />
     <Content Include="Content\img\twitter-ico.png" />
@@ -269,12 +274,16 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Group_Create_v1.0.0.js" />
     <Content Include="Scripts\Contact_Create_v1.0.0.js" />
     <Content Include="Scripts\Contact_Edit_v1.0.0.js" />
     <Content Include="Scripts\Contact_Index_v1.0.0.js" />
+    <Content Include="Scripts\Group_Edit_v1.0.0.js" />
+    <Content Include="Scripts\Group_Index_v1.0.0.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.md5.js" />
     <Content Include="Scripts\jquery.tagsinput.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
@@ -295,7 +304,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Contact\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
@@ -304,6 +312,10 @@
     <Content Include="Views\Account\Settings.cshtml" />
     <Content Include="Views\Contact\Create.cshtml" />
     <Content Include="Views\Contact\Edit.cshtml" />
+    <Content Include="Views\Group\Index.cshtml" />
+    <Content Include="Views\Group\Create.cshtml" />
+    <Content Include="Views\Group\Edit.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0-rc2\tools\analyzers\C#\Microsoft.CodeAnalysis.Analyzers.dll" />

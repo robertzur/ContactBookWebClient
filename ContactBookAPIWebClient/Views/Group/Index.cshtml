@@ -1,0 +1,129 @@
+﻿@model IEnumerable<ContactBookAPIWebClient.Models.Group>
+@using System.Security.Cryptography
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@section scripts {
+    <script src="~/Scripts/Group_Index_v1.0.0.js"></script>
+    <script src="~/Scripts/jquery.md5.js"></script>
+}
+
+<link href="~/Content/jquery.tagsinput.css" rel="stylesheet" />
+<br />
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Groups</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left" role="search" action="/Group/Index">
+                <div class="form-group">
+                    <input name="searchQuery" style="margin-top:0px" type="text" class="form-control" placeholder="Search" value="@ViewBag.SearchQuery">
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+            <form class="navbar-form navbar-right" action="/Group/Create" method="get">
+                <button class="btn btn-default" type="submit">Add Group</button>
+            </form>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<p>
+
+</p>
+<div class="row">
+    @if (Model.Count() == 0)
+    {
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Oops,</strong> no groups found.
+        </div>
+    }
+    <div class="col-sm-12 col-md-12">
+        <ul class="list-group">
+            @foreach (var item in Model)
+            {
+
+                <li class="list-group-item">
+                    
+                    <div class="row">
+                        <div class="col-md-2 col-sm-2">
+                            <strong>@item.name</strong>
+                        </div>
+                        <div class="col-sm-8 col-md-8">
+                            @item.description
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+
+                           
+                                @*<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span></button>*@
+                                <a href="/Group/Edit/@item._id" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <button type="button" data-id="@item._id" data-toggle="modal" data-target="#detailsModal" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+                                <button type="button" class="btn btn-danger btn-delete" group-id="@item._id"><span class="glyphicon glyphicon-remove"></span></button>
+                            
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        @*<div class="thumbnail">
+                <img src="@("http://www.gravatar.com/avatar/"+hashString.ToLower()+"?s=250")">
+                <div class="caption">
+                    <h3>@item.name</h3>
+                    <p>@(string.IsNullOrEmpty(item.description) ? Html.Raw("<span>&nbsp;</span>") : Html.Raw(item.description))</p>
+                    <p style="text-align:center">
+                        <a href="#" data-toggle="modal" data-target="#detailsModal" data-id="@item._id" class="btn btn-primary" role="button">Details</a>
+                        <a href="/Contact/Edit/@item._id" class="btn btn-primary" role="button">Edit</a>
+                        <a href="/Contact/Delete/@item._id" class="btn btn-danger btn-delete" contact-id="@item._id" role="button">Remove</a>
+                    </p>
+                </div>
+            </div>*@
+    </div>
+
+
+
+</div>
+
+<!-- Modal -->
+<div id="detailsModal" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="modal-btn modal-close close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <div class="modal-title">Group details</div>
+            </div>
+            <div class="modal-body-load">
+                <div class="container-fluid">
+                    <div class="row">
+                        <p class="text-center" style="padding:20px;"><img src="~/Content/img/ajax-loader.gif" /></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <h4>Members</h4>
+                        <ul class="list-group group-members" id="list-group-contacts">
+                           
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
